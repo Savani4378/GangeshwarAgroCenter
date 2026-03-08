@@ -61,17 +61,42 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
+  CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER,
+    user_id INTEGER,
+    rating INTEGER NOT NULL,
+    comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
 `);
 
 // Seed Admin User if not exists
-const adminExists = db.prepare("SELECT * FROM users WHERE email = ?").get("admin@gangeshwar.com");
+const adminExists = db.prepare("SELECT * FROM users WHERE email = ?").get("vivekprajapati4894@gmail.com");
 if (!adminExists) {
   db.prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)").run(
     "Admin",
-    "admin@gangeshwar.com",
+    "vivekprajapati4894@gmail.com",
     "admin123",
     "admin"
   );
+}
+
+// Seed Customers if not exists
+const customersCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'customer'").get().count;
+if (customersCount === 0) {
+  const seedCustomers = [
+    { name: "Rajesh Kumar", email: "rajesh@example.com", phone: "9876543210", address: "Ahmedabad, Gujarat" },
+    { name: "Suresh Patel", email: "suresh@example.com", phone: "9123456789", address: "Surat, Gujarat" },
+    { name: "Amit Shah", email: "amit@example.com", phone: "9988776655", address: "Palanpur, Gujarat" },
+  ];
+
+  const insertCustomer = db.prepare("INSERT INTO users (name, email, password, role, phone, address) VALUES (?, ?, ?, 'customer', ?, ?)");
+  seedCustomers.forEach(c => {
+    insertCustomer.run(c.name, c.email, "customer123", c.phone, c.address);
+  });
 }
 
 // Seed Products if not exists
@@ -115,6 +140,11 @@ if (bannersExist === 0) {
 }
 
 // API Routes
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Auth
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
@@ -124,6 +154,27 @@ app.post("/api/auth/login", (req, res) => {
     res.json({ user: userWithoutPassword });
   } else {
     res.status(401).json({ error: "Invalid credentials" });
+  }
+});
+
+app.post("/api/auth/forgot-password", (req, res) => {
+  const { email } = req.body;
+  const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+  if (user) {
+    // In a real app, send email with token. Here we just return success.
+    res.json({ message: "Reset link sent to your email (simulated)" });
+  } else {
+    res.status(404).json({ error: "User not found" });
+  }
+});
+
+app.post("/api/auth/reset-password", (req, res) => {
+  const { email, newPassword } = req.body;
+  const result = db.prepare("UPDATE users SET password = ? WHERE email = ?").run(newPassword, email);
+  if (result.changes > 0) {
+    res.json({ message: "Password updated successfully" });
+  } else {
+    res.status(404).json({ error: "User not found" });
   }
 });
 
@@ -216,6 +267,32 @@ app.put("/api/orders/:id", (req, res) => {
 app.get("/api/customers", (req, res) => {
   const customers = db.prepare("SELECT * FROM users WHERE role = 'customer'").all();
   res.json(customers);
+});
+
+app.delete("/api/customers/:id", (req, res) => {
+  db.prepare("DELETE FROM users WHERE id = ? AND role = 'customer'").run(req.params.id);
+  res.json({ success: true });
+});
+
+// Reviews
+app.get("/api/products/:id/reviews", (req, res) => {
+  const reviews = db.prepare(`
+    SELECT reviews.*, users.name as user_name
+    FROM reviews
+    JOIN users ON reviews.user_id = users.id
+    WHERE product_id = ?
+    ORDER BY created_at DESC
+  `).all(req.params.id);
+  res.json(reviews);
+});
+
+app.post("/api/reviews", (req, res) => {
+  const { product_id, user_id, rating, comment } = req.body;
+  const result = db.prepare(`
+    INSERT INTO reviews (product_id, user_id, rating, comment)
+    VALUES (?, ?, ?, ?)
+  `).run(product_id, user_id, rating, comment);
+  res.json({ id: result.lastInsertRowid });
 });
 
 // Vite Middleware for Development
