@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { User, Users, Menu, X, Leaf, Sprout, Droplets, Bug, Trash2, Plus, Edit, LogOut, ChevronRight, Star, Mail, Phone, Search, ShoppingBag, Image as ImageIcon, LayoutDashboard, Shield, BarChart3, PieChart as PieChartIcon, Activity, Eye, EyeOff } from 'lucide-react';
+import { User, Users, Menu, X, Leaf, Sprout, Droplets, Bug, Trash2, Plus, Edit, LogOut, ChevronRight, Star, Mail, Phone, Search, ShoppingBag, Image as ImageIcon, LayoutDashboard, Shield, BarChart3, PieChart as PieChartIcon, Activity, Eye, EyeOff, Facebook, Instagram, Twitter, MapPin, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
@@ -41,6 +41,14 @@ interface Review {
 }
 
 // --- Components ---
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 const Navbar = ({ user, onLogout, products, wishlistCount, totalPrice }: { user: any, onLogout: () => void, products: Product[], wishlistCount: number, totalPrice: number }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -97,7 +105,7 @@ const Navbar = ({ user, onLogout, products, wishlistCount, totalPrice }: { user:
         <div className="flex justify-between h-20 items-center gap-4">
           <Link to="/" className="flex items-center space-x-2 shrink-0">
             <img src="/logo.png" alt="Gangeshwar Agro Logo" className="w-10 h-10 object-contain" onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://github.com/Savani4378/GangeshwarAgroCenter/blob/main/logo.png'; // Fallback if logo.png is empty/missing
+              (e.target as HTMLImageElement).src = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/logo.png'; // Correct raw URL fallback
             }} />
             <span className="text-2xl font-bold text-primary tracking-tight hidden sm:block">Gangeshwar Agro Center</span>
           </Link>
@@ -342,60 +350,118 @@ const Navbar = ({ user, onLogout, products, wishlistCount, totalPrice }: { user:
   );
 };
 
-const Footer = () => (
-  <footer className="bg-primary-dark text-white pt-16 pb-8">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <img src="/logo.png" alt="Gangeshwar Agro Logo" className="w-10 h-10 object-contain brightness-0 invert" onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/628/628283.png';
-            }} />
-            <span className="text-2xl font-bold tracking-tight">Gangeshwar Agro</span>
+const Footer = ({ about, contact, socialLinks }: { about: any, contact: any, socialLinks: any }) => (
+  <footer className="bg-[#0a1a0a] text-white pt-20 pb-10 relative overflow-hidden">
+    {/* Subtle background decoration */}
+    <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+        <div className="md:col-span-4 space-y-6">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white p-2 rounded-xl">
+              <img src="/logo.png" alt="Gangeshwar Agro Logo" className="w-10 h-10 object-contain" onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/logo.png';
+              }} />
+            </div>
+            <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Gangeshwar Agro</span>
           </div>
-          <p className="text-gray-300 text-sm leading-relaxed">
-            Your trusted partner in agriculture. Providing high-quality seeds, fertilizers, and pesticides to farmers across the region.
+          <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+            {about?.content?.substring(0, 180) || "Your trusted partner in agriculture since 1995. Providing high-quality seeds, fertilizers, and pesticides to farmers across the region."}
+            {about?.content?.length > 180 ? '...' : ''}
           </p>
+          <div className="flex items-center space-x-4">
+            {socialLinks?.facebook && (
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 border border-white/10">
+                <Facebook className="w-5 h-5" />
+              </a>
+            )}
+            {socialLinks?.instagram && (
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 border border-white/10">
+                <Instagram className="w-5 h-5" />
+              </a>
+            )}
+            {socialLinks?.twitter && (
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 border border-white/10">
+                <Twitter className="w-5 h-5" />
+              </a>
+            )}
+            {socialLinks?.whatsapp && (
+              <a href={`https://wa.me/${socialLinks.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all duration-300 border border-white/10">
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </a>
+            )}
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
-          <ul className="space-y-3 text-gray-300 text-sm">
-            <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-            <li><Link to="/products/Seeds" className="hover:text-white transition-colors">Seeds</Link></li>
-            <li><Link to="/products/Fertilizers" className="hover:text-white transition-colors">Fertilizers</Link></li>
-            <li><Link to="/products/Pesticides" className="hover:text-white transition-colors">Pesticides</Link></li>
+
+        <div className="md:col-span-2">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-8">Quick Links</h3>
+          <ul className="space-y-4 text-gray-400 text-sm">
+            <li><Link to="/" className="hover:text-white hover:translate-x-1 inline-block transition-all">Home</Link></li>
+            <li><Link to="/products/Seeds" className="hover:text-white hover:translate-x-1 inline-block transition-all">Seeds</Link></li>
+            <li><Link to="/products/Fertilizers" className="hover:text-white hover:translate-x-1 inline-block transition-all">Fertilizers</Link></li>
+            <li><Link to="/products/Pesticides" className="hover:text-white hover:translate-x-1 inline-block transition-all">Pesticides</Link></li>
           </ul>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-6">Support</h3>
-          <ul className="space-y-3 text-gray-300 text-sm">
-            <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
-            <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+
+        <div className="md:col-span-2">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-8">Support</h3>
+          <ul className="space-y-4 text-gray-400 text-sm">
+            <li><Link to="/about" className="hover:text-white hover:translate-x-1 inline-block transition-all">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-white hover:translate-x-1 inline-block transition-all">Contact</Link></li>
+            <li><Link to="/wishlist" className="hover:text-white hover:translate-x-1 inline-block transition-all">My Wishlist</Link></li>
           </ul>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold mb-6">Contact</h3>
-          <ul className="space-y-3 text-gray-300 text-sm">
-            <li>
+
+        <div className="md:col-span-4">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-primary mb-8">Contact Us</h3>
+          <ul className="space-y-6 text-gray-400 text-sm">
+            <li className="flex items-start space-x-4">
+              <div className="mt-1 bg-primary/20 p-2 rounded-lg shrink-0">
+                <MapPin className="w-4 h-4 text-primary" />
+              </div>
               <a 
-                href="https://www.google.com/maps/search/?api=1&query=Gangeshwar+Agro+Center+New+Market+Yard+Modi+Nagar+Palanpur+Gujarat+385001" 
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001")}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
+                className="hover:text-white transition-colors leading-relaxed"
               >
-                Gangeshwar Agro Center, New Market Yard,<br />
-                Modi Nagar, Palanpur, Gujarat 385001
+                {contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001"}
               </a>
             </li>
-            <li>
-              Phone: <a href="tel:+919712999082" className="hover:text-white transition-colors">+91 97129 99082</a> | <a href="tel:+919925457719" className="hover:text-white transition-colors">+91 99254 57719</a>
+            <li className="flex items-start space-x-4">
+              <div className="mt-1 bg-primary/20 p-2 rounded-lg shrink-0">
+                <Phone className="w-4 h-4 text-primary" />
+              </div>
+              <div className="flex flex-col space-y-2">
+                {contact?.phone ? (
+                  contact.phone.split('|').map((p: string, i: number) => (
+                    <a key={i} href={`tel:${p.trim()}`} className="hover:text-white transition-colors whitespace-nowrap">{p.trim()}</a>
+                  ))
+                ) : (
+                  <><a href="tel:+919712999082" className="hover:text-white transition-colors">+91 97129 99082</a><a href="tel:+919925457719" className="hover:text-white transition-colors">+91 99254 57719</a></>
+                )}
+              </div>
             </li>
-            <li>Email: gangeshwaragrocenter@gmail.com</li>
+            <li className="flex items-start space-x-4">
+              <div className="mt-1 bg-primary/20 p-2 rounded-lg shrink-0">
+                <Mail className="w-4 h-4 text-primary" />
+              </div>
+              <a href={`mailto:${contact?.email || "gangeshwaragrocenter@gmail.com"}`} className="hover:text-white transition-colors break-all">
+                {contact?.email || "gangeshwaragrocenter@gmail.com"}
+              </a>
+            </li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 pt-8 text-center text-gray-400 text-xs">
-        &copy; {new Date().getFullYear()} Gangeshwar Agro Center. All rights reserved.
+      
+      <div className="border-t border-white/5 pt-10 text-center">
+        <p className="text-gray-500 text-xs">
+          &copy; {new Date().getFullYear()} Gangeshwar Agro Center. All rights reserved.
+        </p>
       </div>
     </div>
   </footer>
@@ -738,21 +804,7 @@ const AddProductPage = ({ setProducts, products, user }: any) => {
   );
 };
 
-const AboutPage = () => {
-  const [about, setAbout] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/about')
-      .then(res => res.json())
-      .then(data => {
-        setAbout(data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <div className="py-20 text-center">Loading...</div>;
-
+const AboutPage = ({ about }: { about: any }) => {
   return (
     <div className="max-w-4xl mx-auto py-20 px-4 space-y-12">
       <div className="text-center space-y-4">
@@ -782,67 +834,156 @@ const AboutPage = () => {
   );
 };
 
-const ContactPage = () => {
-  const [contact, setContact] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/contact')
-      .then(res => res.json())
-      .then(data => {
-        setContact(data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <div className="py-20 text-center">Loading...</div>;
-
+const ContactPage = ({ contact, socialLinks }: { contact: any, socialLinks: any }) => {
   return (
-    <div className="max-w-5xl mx-auto py-20 px-4">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-        <div className="bg-primary p-12 text-white md:w-1/3 space-y-8">
-          <h2 className="text-3xl font-bold">Contact</h2>
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/10 p-3 rounded-xl"><Leaf className="w-5 h-5" /></div>
-              <div>
-                <p className="text-xs text-white/60 uppercase font-bold">Address</p>
-                <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001")}`}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm hover:underline transition-all"
-                >
-                  {contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001"}
-                </a>
-              </div>
+    <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+      <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h1 className="text-5xl font-black text-gray-900 tracking-tight">Get in Touch</h1>
+        <p className="text-lg text-gray-500">Have questions about our products or need agricultural advice? We're here to help you grow.</p>
+      </div>
+
+      <div className="bg-white rounded-[3rem] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden flex flex-col lg:flex-row min-h-[700px]">
+        <div className="bg-primary p-12 lg:p-16 text-white lg:w-[40%] relative overflow-hidden flex flex-col justify-between">
+          {/* Decorative background circle */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+          
+          <div className="relative z-10 space-y-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Contact Information</h2>
+              <p className="text-white/70">Fill out the form and our team will get back to you within 24 hours.</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/10 p-3 rounded-xl"><Mail className="w-5 h-5" /></div>
-              <div>
-                <p className="text-xs text-white/60 uppercase font-bold">Email</p>
-                <p className="text-sm">{contact?.email || "gangeshwaragrocenter@gmail.com"}</p>
+
+            <div className="space-y-10">
+              <div className="flex items-start space-x-6 group">
+                <div className="bg-white/15 p-4 rounded-2xl shrink-0 group-hover:bg-white/25 transition-colors">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-white/60 uppercase font-black tracking-widest">Our Store</p>
+                  <a 
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001")}`}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-lg hover:text-white/80 transition-all leading-relaxed block font-medium"
+                  >
+                    {contact?.address || "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001"}
+                  </a>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/10 p-3 rounded-xl"><Phone className="w-5 h-5" /></div>
-              <div>
-                <p className="text-xs text-white/60 uppercase font-bold">Phone</p>
-                <a href={`tel:${contact?.phone?.split('|')[0]?.trim() || "+919712999082"}`} className="block text-sm hover:underline transition-all">
-                  {contact?.phone || "+91 97129 99082"}
-                </a>
+
+              <div className="flex items-start space-x-6 group">
+                <div className="bg-white/15 p-4 rounded-2xl shrink-0 group-hover:bg-white/25 transition-colors">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-white/60 uppercase font-black tracking-widest">Email Support</p>
+                  <a href={`mailto:${contact?.email || "gangeshwaragrocenter@gmail.com"}`} className="text-lg hover:text-white/80 transition-all break-all block font-medium">
+                    {contact?.email || "gangeshwaragrocenter@gmail.com"}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-6 group">
+                <div className="bg-white/15 p-4 rounded-2xl shrink-0 group-hover:bg-white/25 transition-colors">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-white/60 uppercase font-black tracking-widest">Call Center</p>
+                  <div className="space-y-3">
+                    {contact?.phone ? (
+                      contact.phone.split('|').map((p: string, i: number) => (
+                        <a key={i} href={`tel:${p.trim()}`} className="block text-xl font-bold hover:text-white/80 transition-all">
+                          {p.trim()}
+                        </a>
+                      ))
+                    ) : (
+                      <a href="tel:+919712999082" className="block text-xl font-bold hover:text-white/80 transition-all">+91 97129 99082</a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-6 group">
+                <div className="bg-white/15 p-4 rounded-2xl shrink-0 group-hover:bg-white/25 transition-colors">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-white/60 uppercase font-black tracking-widest">Business Hours</p>
+                  <p className="text-lg font-medium">Mon - Sat: 9:00 AM - 8:00 PM</p>
+                </div>
               </div>
             </div>
           </div>
+
+          <div className="relative z-10 pt-12 flex items-center space-x-6">
+            {socialLinks?.facebook && (
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+                <Facebook className="w-6 h-6" />
+              </a>
+            )}
+            {socialLinks?.instagram && (
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+                <Instagram className="w-6 h-6" />
+              </a>
+            )}
+            {socialLinks?.twitter && (
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+                <Twitter className="w-6 h-6" />
+              </a>
+            )}
+            {socialLinks?.whatsapp && (
+              <a href={`https://wa.me/${socialLinks.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+              </a>
+            )}
+          </div>
         </div>
-        <div className="p-12 flex-grow">
-          <h2 className="text-3xl font-bold mb-8">Send a Message</h2>
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input type="text" placeholder="Your Name" className="w-full px-4 py-3 rounded-2xl border border-gray-100 outline-none focus:border-primary" />
-            <input type="email" placeholder="Email Address" className="w-full px-4 py-3 rounded-2xl border border-gray-200 outline-none focus:border-primary" />
-            <textarea placeholder="How can we help you?" className="w-full px-4 py-3 rounded-2xl border border-gray-100 outline-none focus:border-primary md:col-span-2 h-32"></textarea>
-            <button className="bg-primary text-white py-4 rounded-2xl font-bold md:col-span-2 hover:bg-primary-dark transition-all">Send Message</button>
-          </form>
+
+        <div className="p-12 lg:p-16 flex-grow bg-gray-50/30">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-2 text-gray-900">Send us a Message</h2>
+            <p className="text-gray-500 mb-10">We'd love to hear from you. Please fill out this form.</p>
+            
+            <form className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">First Name</label>
+                  <input type="text" placeholder="John" className="w-full px-6 py-4 rounded-2xl border border-gray-200 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-white transition-all" />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Last Name</label>
+                  <input type="text" placeholder="Doe" className="w-full px-6 py-4 rounded-2xl border border-gray-200 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-white transition-all" />
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+                <input type="email" placeholder="john@example.com" className="w-full px-6 py-4 rounded-2xl border border-gray-200 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-white transition-all" />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Subject</label>
+                <select className="w-full px-6 py-4 rounded-2xl border border-gray-200 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-white transition-all appearance-none">
+                  <option>General Inquiry</option>
+                  <option>Product Support</option>
+                  <option>Bulk Orders</option>
+                  <option>Feedback</option>
+                </select>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Your Message</label>
+                <textarea placeholder="Tell us how we can help..." className="w-full px-6 py-4 rounded-2xl border border-gray-200 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 bg-white transition-all h-44 resize-none"></textarea>
+              </div>
+
+              <button className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-black transition-all shadow-2xl shadow-gray-300 transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center space-x-3">
+                <span>Send Message</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -853,8 +994,12 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [about, setAbout] = useState<any>(null);
+  const [contact, setContact] = useState<any>(null);
+  const [socialLinks, setSocialLinks] = useState<any>({ facebook: '', instagram: '', twitter: '', whatsapp: '' });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const handleWishlistToggle = async (product: Product) => {
     if (!user) {
@@ -870,30 +1015,36 @@ export default function App() {
     }
 
     const exists = wishlist.find(item => item.id === product.id);
-    if (exists) {
-      await fetch(`/api/wishlist/${user.id}/${product.id}`, { method: 'DELETE' });
-      setWishlist(prev => prev.filter(item => item.id !== product.id));
-    } else {
-      await fetch('/api/wishlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id, product_id: product.id })
-      });
-      setWishlist(prev => [...prev, product]);
+    try {
+      if (exists) {
+        const res = await fetch(`/api/wishlist/${user.id}/${product.id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to remove from wishlist');
+        setWishlist(prev => prev.filter(item => item.id !== product.id));
+      } else {
+        const res = await fetch('/api/wishlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, product_id: product.id })
+        });
+        if (!res.ok) throw new Error('Failed to add to wishlist');
+        setWishlist(prev => [...prev, product]);
+      }
+    } catch (err: any) {
+      alert(err.message);
     }
   };
 
   const handleClearWishlist = async () => {
     if (user) {
-      // We don't have a clear all endpoint, so we loop or add one.
-      // For simplicity, I'll just remove them one by one or assume the user wants to manage them.
-      // Actually, let's add a clear endpoint in server.ts later if needed.
-      // For now, just local clear if guest, or alert.
       if (confirm('Clear all items from wishlist?')) {
-        for (const item of wishlist) {
-          await fetch(`/api/wishlist/${user.id}/${item.id}`, { method: 'DELETE' });
+        try {
+          for (const item of wishlist) {
+            await fetch(`/api/wishlist/${user.id}/${item.id}`, { method: 'DELETE' });
+          }
+          setWishlist([]);
+        } catch (err) {
+          alert('Failed to clear wishlist completely. Please try again.');
         }
-        setWishlist([]);
       }
     } else {
       if (confirm('Clear all items from wishlist?')) {
@@ -904,12 +1055,17 @@ export default function App() {
 
   const handleUpdateWishlistNote = async (productId: number, note: string) => {
     if (user) {
-      await fetch(`/api/wishlist/${user.id}/${productId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ note })
-      });
-      setWishlist(prev => prev.map(item => item.id === productId ? { ...item, note } : item));
+      try {
+        const res = await fetch(`/api/wishlist/${user.id}/${productId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note })
+        });
+        if (!res.ok) throw new Error('Failed to update note');
+        setWishlist(prev => prev.map(item => item.id === productId ? { ...item, note } : item));
+      } catch (err: any) {
+        alert(err.message);
+      }
     } else {
       setWishlist(prev => prev.map(item => item.id === productId ? { ...item, note } : item));
     }
@@ -920,9 +1076,12 @@ export default function App() {
   useEffect(() => {
     if (user) {
       fetch(`/api/wishlist/${user.id}`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch wishlist');
+          return res.json();
+        })
         .then(data => setWishlist(data))
-        .catch(err => console.error("Failed to fetch wishlist", err));
+        .catch(err => console.error(err));
     }
   }, [user]);
 
@@ -934,7 +1093,7 @@ export default function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: user?.name || 'Guest',
-            location: 'Unknown', // In a real app, use a geolocation API
+            location: 'Unknown',
           })
         });
       } catch (err) {
@@ -942,35 +1101,43 @@ export default function App() {
       }
     };
     trackVisitor();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setError(null);
       try {
-        const [prodRes, banRes] = await Promise.all([
+        const [prodRes, banRes, aboutRes, contactRes, socialRes] = await Promise.all([
           fetch('/api/products'),
-          fetch('/api/banners')
+          fetch('/api/banners'),
+          fetch('/api/about'),
+          fetch('/api/contact'),
+          fetch('/api/social-links')
         ]);
         
-        if (!prodRes.ok) {
-          const text = await prodRes.text();
-          throw new Error(`Failed to fetch products: ${prodRes.status} ${text}`);
-        }
-        if (!banRes.ok) {
-          const text = await banRes.text();
-          throw new Error(`Failed to fetch banners: ${banRes.status} ${text}`);
-        }
+        if (!prodRes.ok) throw new Error('Failed to load products. Please try again later.');
+        if (!banRes.ok) throw new Error('Failed to load banners. Please try again later.');
+        if (!aboutRes.ok) throw new Error('Failed to load about content.');
+        if (!contactRes.ok) throw new Error('Failed to load contact info.');
+        if (!socialRes.ok) throw new Error('Failed to load social links.');
 
         const prodData = await prodRes.json();
         const banData = await banRes.json();
+        const aboutData = await aboutRes.json();
+        const contactData = await contactRes.json();
+        const socialData = await socialRes.json();
+
         setProducts(prodData);
         setBanners(banData);
+        setAbout(aboutData);
+        setContact(contactData);
+        setSocialLinks(socialData);
 
-        // Load user from local storage
         const savedUser = localStorage.getItem('agro_user');
         if (savedUser) setUser(JSON.parse(savedUser));
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to fetch data", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -995,8 +1162,27 @@ export default function App() {
     </div>
   );
 
+  if (error) return (
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+      <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-gray-100 max-w-md">
+        <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Bug className="w-10 h-10 text-red-500" />
+        </div>
+        <h2 className="text-2xl font-black text-gray-900 mb-4">Oops! Something went wrong</h2>
+        <p className="text-gray-500 mb-8">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-primary text-white px-10 py-4 rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-xl shadow-primary/20"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col font-sans">
         <Navbar user={user} onLogout={handleLogout} products={products} wishlistCount={wishlist.length} totalPrice={totalPrice} />
         <main className="flex-grow">
@@ -1004,21 +1190,21 @@ export default function App() {
             <Route path="/" element={<Home products={products} banners={banners} onWishlistToggle={handleWishlistToggle} wishlist={wishlist} />} />
             <Route path="/products/:category" element={<ProductsPage products={products} onWishlistToggle={handleWishlistToggle} wishlist={wishlist} />} />
             <Route path="/product/:id" element={<ProductDetailsPage products={products} user={user} onWishlistToggle={handleWishlistToggle} wishlist={wishlist} />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/about" element={<AboutPage about={about} />} />
+            <Route path="/contact" element={<ContactPage contact={contact} socialLinks={socialLinks} />} />
             <Route path="/login" element={<LoginPage setUser={setUser} />} />
             <Route path="/admin/login" element={<AdminLoginPage setUser={setUser} />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/wishlist" element={<WishlistPage wishlist={wishlist} onWishlistToggle={handleWishlistToggle} onClearWishlist={handleClearWishlist} onUpdateNote={handleUpdateWishlistNote} />} />
-            <Route path="/admin/*" element={<AdminDashboard products={products} setProducts={setProducts} banners={banners} setBanners={setBanners} user={user} />} />
+            <Route path="/admin/*" element={<AdminDashboard products={products} setProducts={setProducts} banners={banners} setBanners={setBanners} user={user} setAbout={setAbout} setContact={setContact} setSocialLinks={setSocialLinks} />} />
             <Route path="/admin/add-product" element={<AddProductPage setProducts={setProducts} products={products} user={user} />} />
             <Route path="/admin/edit-product/:id" element={<AddProductPage setProducts={setProducts} products={products} user={user} />} />
             <Route path="/admin/add-banner" element={<AddBannerPage setBanners={setBanners} user={user} />} />
           </Routes>
         </main>
-        <Footer />
+        <Footer about={about} contact={contact} socialLinks={socialLinks} />
       </div>
     </Router>
   );
@@ -1195,7 +1381,7 @@ const ForgotPasswordPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-primary outline-none transition-all"
-              placeholder="gangeshwaragrocenter@gmail.com"
+              placeholder="vivekprajapati4894@gmail.com"
               required
             />
           </div>
@@ -1802,7 +1988,7 @@ const LoginPage = ({ setUser }: { setUser: any }) => {
   );
 };
 
-const AdminDashboard = ({ products, setProducts, banners, setBanners, user }: any) => {
+const AdminDashboard = ({ products, setProducts, banners, setBanners, user, setAbout, setContact, setSocialLinks }: any) => {
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -1820,6 +2006,7 @@ const AdminDashboard = ({ products, setProducts, banners, setBanners, user }: an
   const [loading, setLoading] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
   const [contactInfo, setContactInfo] = useState({ address: '', phone: '', email: '' });
+  const [socialInfo, setSocialInfo] = useState({ facebook: '', instagram: '', twitter: '', whatsapp: '' });
 
   useEffect(() => {
     if (activeTab === 'visitors') {
@@ -1830,41 +2017,96 @@ const AdminDashboard = ({ products, setProducts, banners, setBanners, user }: an
       fetchAbout();
     } else if (activeTab === 'contact') {
       fetchContact();
+    } else if (activeTab === 'social') {
+      fetchSocial();
     }
   }, [activeTab]);
 
+  const fetchSocial = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/social-links');
+      if (!res.ok) throw new Error('Failed to fetch social links');
+      const data = await res.json();
+      setSocialInfo(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveSocial = async () => {
+    try {
+      const res = await fetch('/api/social-links', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(socialInfo)
+      });
+      if (!res.ok) throw new Error('Failed to update social links');
+      setSocialLinks(socialInfo);
+      alert('Social links updated!');
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const fetchAbout = async () => {
     setLoading(true);
-    const res = await fetch('/api/about');
-    const data = await res.json();
-    setAboutContent(data.content);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/about');
+      if (!res.ok) throw new Error('Failed to fetch about content');
+      const data = await res.json();
+      setAboutContent(data.content);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchContact = async () => {
     setLoading(true);
-    const res = await fetch('/api/contact');
-    const data = await res.json();
-    setContactInfo(data);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/contact');
+      if (!res.ok) throw new Error('Failed to fetch contact info');
+      const data = await res.json();
+      setContactInfo(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSaveAbout = async () => {
-    await fetch('/api/about', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: aboutContent })
-    });
-    alert('About content updated!');
+    try {
+      const res = await fetch('/api/about', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: aboutContent })
+      });
+      if (!res.ok) throw new Error('Failed to update about content');
+      setAbout({ content: aboutContent });
+      alert('About content updated!');
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const handleSaveContact = async () => {
-    await fetch('/api/contact', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(contactInfo)
-    });
-    alert('Contact info updated!');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactInfo)
+      });
+      if (!res.ok) throw new Error('Failed to update contact info');
+      setContact(contactInfo);
+      alert('Contact info updated!');
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const fetchVisitors = async () => {
@@ -2055,6 +2297,10 @@ const AdminDashboard = ({ products, setProducts, banners, setBanners, user }: an
           <button onClick={() => setActiveTab('contact')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'contact' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 hover:bg-gray-100'}`}>
             <Phone className="w-5 h-5" />
             <span>Contact</span>
+          </button>
+          <button onClick={() => setActiveTab('social')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'social' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <Users className="w-5 h-5" />
+            <span>Social Links</span>
           </button>
         </aside>
 
@@ -2309,6 +2555,59 @@ const AdminDashboard = ({ products, setProducts, banners, setBanners, user }: an
                 </div>
                 <button 
                   onClick={handleSaveContact}
+                  className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          )}
+          {!loading && activeTab === 'social' && (
+            <div className="space-y-8">
+              <h3 className="text-2xl font-bold">Manage Social Media Links</h3>
+              <div className="space-y-6 max-w-2xl">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Facebook URL</label>
+                  <input 
+                    type="text"
+                    value={socialInfo.facebook} 
+                    onChange={(e) => setSocialInfo({ ...socialInfo, facebook: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 outline-none focus:border-primary"
+                    placeholder="https://facebook.com/yourpage"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Instagram URL</label>
+                  <input 
+                    type="text"
+                    value={socialInfo.instagram} 
+                    onChange={(e) => setSocialInfo({ ...socialInfo, instagram: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 outline-none focus:border-primary"
+                    placeholder="https://instagram.com/yourprofile"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Twitter URL</label>
+                  <input 
+                    type="text"
+                    value={socialInfo.twitter} 
+                    onChange={(e) => setSocialInfo({ ...socialInfo, twitter: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 outline-none focus:border-primary"
+                    placeholder="https://twitter.com/yourhandle"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">WhatsApp Number (with country code, e.g. +919712999082)</label>
+                  <input 
+                    type="text"
+                    value={socialInfo.whatsapp} 
+                    onChange={(e) => setSocialInfo({ ...socialInfo, whatsapp: e.target.value })}
+                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 outline-none focus:border-primary"
+                    placeholder="+919712999082"
+                  />
+                </div>
+                <button 
+                  onClick={handleSaveSocial}
                   className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
                 >
                   Save Changes

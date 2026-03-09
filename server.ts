@@ -9,12 +9,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.use(express.json());
 
 // Database Initialization
-const db = new Database("./agro.db");
+const db = new Database("agro.db");
 
 // Create tables
 db.exec(`
@@ -95,6 +95,15 @@ db.exec(`
     email TEXT,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS social_links (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    facebook TEXT,
+    instagram TEXT,
+    twitter TEXT,
+    whatsapp TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Seed About and Contact if not exists
@@ -110,16 +119,26 @@ if (contactExists === 0) {
   db.prepare("INSERT INTO contact_info (address, phone, email) VALUES (?, ?, ?)").run(
     "Gangeshwar Agro Center, New Market Yard, Modi Nagar, Palanpur, Gujarat 385001",
     "+91 97129 99082 | +91 99254 57719",
-    "vivekprajapati4894@gmail.com"
+    "gangeshwaragrocenter@gmail.com"
+  );
+}
+
+const socialExists = db.prepare("SELECT COUNT(*) as count FROM social_links").get().count;
+if (socialExists === 0) {
+  db.prepare("INSERT INTO social_links (facebook, instagram, twitter, whatsapp) VALUES (?, ?, ?, ?)").run(
+    "https://facebook.com",
+    "https://instagram.com",
+    "https://twitter.com",
+    "+919712999082"
   );
 }
 
 // Seed Admin User if not exists
-const adminExists = db.prepare("SELECT * FROM users WHERE email = ?").get("vivekprajapati4894@gmail.com");
+const adminExists = db.prepare("SELECT * FROM users WHERE email = ?").get("gangeshwaragrocenter@gmail.com");
 if (!adminExists) {
   db.prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)").run(
     "Admin",
-    "vivekprajapati4894@gmail.com",
+    "gangeshwaragrocenter@gmail.com",
     "admin123",
     "admin"
   );
@@ -414,6 +433,23 @@ app.put("/api/contact", (req, res) => {
     db.prepare("UPDATE contact_info SET address = ?, phone = ?, email = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(address, phone, email, exists.id);
   } else {
     db.prepare("INSERT INTO contact_info (address, phone, email) VALUES (?, ?, ?)").run(address, phone, email);
+  }
+  res.json({ success: true });
+});
+
+// Social Links
+app.get("/api/social-links", (req, res) => {
+  const links = db.prepare("SELECT * FROM social_links ORDER BY id DESC LIMIT 1").get();
+  res.json(links || { facebook: "", instagram: "", twitter: "", whatsapp: "" });
+});
+
+app.put("/api/social-links", (req, res) => {
+  const { facebook, instagram, twitter, whatsapp } = req.body;
+  const exists = db.prepare("SELECT id FROM social_links LIMIT 1").get();
+  if (exists) {
+    db.prepare("UPDATE social_links SET facebook = ?, instagram = ?, twitter = ?, whatsapp = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(facebook, instagram, twitter, whatsapp, exists.id);
+  } else {
+    db.prepare("INSERT INTO social_links (facebook, instagram, twitter, whatsapp) VALUES (?, ?, ?, ?)").run(facebook, instagram, twitter, whatsapp);
   }
   res.json({ success: true });
 });
