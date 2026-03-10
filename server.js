@@ -107,14 +107,14 @@ CREATE TABLE IF NOT EXISTS products (
     whatsapp TEXT,
     whatsapp_visible INTEGER DEFAULT 1,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+  `);
 
 
   try { db.prepare("ALTER TABLE social_links ADD COLUMN facebook_visible INTEGER DEFAULT 1").run(); } catch(e) {}
   try { db.prepare("ALTER TABLE social_links ADD COLUMN instagram_visible INTEGER DEFAULT 1").run(); } catch(e) {}
   try { db.prepare("ALTER TABLE social_links ADD COLUMN twitter_visible INTEGER DEFAULT 1").run(); } catch(e) {}
   try { db.prepare("ALTER TABLE social_links ADD COLUMN whatsapp_visible INTEGER DEFAULT 1").run(); } catch(e) {}
-`);
+);
 
 
 const aboutExists = db.prepare("SELECT COUNT(*) as count FROM about_content").get().count;
