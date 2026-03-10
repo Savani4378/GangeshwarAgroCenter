@@ -16,18 +16,18 @@ app.use(express.json());
 // Database Initialization
 const db = new Database("agro.db");
 
-// Create tables
 db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT DEFAULT 'customer',
-    phone TEXT,
-    address TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
+CREATE TABLE IF NOT EXISTS products (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ name TEXT NOT NULL,
+ category TEXT,
+ description TEXT,
+ price REAL,
+ stock INTEGER,
+ images TEXT,
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
   CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
