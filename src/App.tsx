@@ -124,9 +124,19 @@ const Navbar = ({ user, onLogout, products, wishlistCount, totalPrice, categorie
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center gap-4">
           <Link to="/" className="flex items-center space-x-2 shrink-0">
-            <img src="/logo.png" alt="Gangeshwar Agro Logo" className="w-10 h-10 object-contain" onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/public/logo.png'; // Correct raw URL fallback
-            }} />
+            <img 
+              src="/logo.png?v=1" 
+              alt="Gangeshwar Agro Logo" 
+              className="w-10 h-10 object-contain" 
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                const fallback = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/public/logo.png';
+                if (target.src !== fallback) {
+                  target.src = fallback;
+                }
+              }} 
+            />
             <span className="text-2xl font-bold text-primary tracking-tight hidden sm:block">Gangeshwar Agro Center</span>
           </Link>
 
@@ -381,9 +391,19 @@ const Footer = ({ about, contact, socialLinks, categories }: { about: any, conta
         <div className="md:col-span-4 space-y-6">
           <div className="flex items-center space-x-3">
             <div className="bg-white p-2 rounded-xl">
-              <img src="/logo.png" alt="Gangeshwar Agro Logo" className="w-10 h-10 object-contain" onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/public/logo.png';
-              }} />
+              <img 
+                src="/logo.png?v=1" 
+                alt="Gangeshwar Agro Logo" 
+                className="w-10 h-10 object-contain" 
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  const fallback = 'https://raw.githubusercontent.com/Savani4378/GangeshwarAgroCenter/main/public/logo.png';
+                  if (target.src !== fallback) {
+                    target.src = fallback;
+                  }
+                }} 
+              />
             </div>
             <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Gangeshwar Agro</span>
           </div>
